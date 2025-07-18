@@ -119,7 +119,9 @@ const useInView = <T extends HTMLElement | null>({
 
     // eslint-disable-next-line compat/compat
     observerRef.current = new IntersectionObserver(
-      ([entry]: IntersectionObserverEntryV2[]) => {
+      (entries: IntersectionObserverEntryV2[]) => {
+        const entry = [...entries].sort((a, b) => b.time - a.time)[0]
+
         const {
           intersectionRatio,
           isIntersecting,
@@ -131,7 +133,9 @@ const useInView = <T extends HTMLElement | null>({
           ? Math.min(...threshold)
           : threshold;
         let inView =
-          isIntersecting !== undefined ? isIntersecting : intersectionRatio > 0;
+          isIntersecting !== undefined
+            ? isIntersecting
+            : intersectionRatio > 0;
         inView = min > 0 ? intersectionRatio >= min : inView;
 
         // @ts-ignore
